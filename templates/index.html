@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF QA Bot</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='css/styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>PDF QA Bot</h1>
+            <div id="api-key-status"></div>
+        </header>
+
+        <div class="upload-container" id="dropZone">
+            <div class="upload-content">
+                <img src="{{ url_for('static', path='img/upload.svg') }}" alt="Upload" class="upload-icon">
+                <p>Sleep een PDF hierheen of klik om te uploaden</p>
+                <input type="file" id="fileInput" accept=".pdf" hidden>
+            </div>
+            <div class="processing-indicator" hidden>
+                <div class="spinner"></div>
+                <p>Document wordt verwerkt...</p>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <button id="summaryBtn" disabled>Genereer Samenvatting</button>
+            <button id="compareBtn" disabled>Vergelijk Document</button>
+            <button id="faqBtn" disabled>Genereer FAQ</button>
+        </div>
+
+        <div class="chat-container">
+            <div id="chatHistory" class="chat-history"></div>
+            <div class="chat-input-container">
+                <input type="text" id="questionInput" placeholder="Stel een vraag over het document..." disabled>
+                <button id="sendBtn" disabled>Verstuur</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="apiKeyModal" class="modal">
+        <div class="modal-content">
+            <h2>API Key Instellen</h2>
+            <p>Voer uw Claude of OpenAI API key in:</p>
+            <input type="password" id="apiKeyInput" placeholder="API Key">
+            <button id="saveApiKey">Opslaan</button>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', path='js/main.js') }}"></script>
+</body>
+</html>
