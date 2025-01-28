@@ -7,8 +7,8 @@ from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
 import PyPDF2
 from langchain.text_splitter import CharacterTextSplitter
-from langchain.vectorstores import FAISS
-from langchain.embeddings import OpenAIEmbeddings
+from langchain.embeddings import HuggingFaceEmbeddings
+from langchain.vectorstores import Chroma
 from langchain.chat_models import ChatOpenAI
 from langchain.chains import ConversationalRetrievalChain
 from pathlib import Path
@@ -29,6 +29,10 @@ templates = Jinja2Templates(directory="templates")
 # Create uploads directory if it doesn't exist
 UPLOAD_DIR = Path("uploads")
 UPLOAD_DIR.mkdir(exist_ok=True)
+
+# Create directory for vector store
+VECTOR_STORE_DIR = Path("vector_store")
+VECTOR_STORE_DIR.mkdir(exist_ok=True)
 
 # Store conversation history
 conversation_history = []
@@ -78,9 +82,14 @@ async def upload_file(file: UploadFile = File(...)):
         )
         texts = text_splitter.split_text(text)
 
-        # Create embeddings and store in FAISS
-        embeddings = OpenAIEmbeddings()
-        vector_store = FAISS.from_texts(texts, embeddings)
+        # Create embeddings and store in Chroma
+        embeddings = HuggingFaceEmbeddings()
+        vector_store = Chroma.from_texts(
+            texts, 
+            embeddings,
+            persist_directory=str(VECTOR_STORE_DIR)
+        )
+        vector_store.persist()
 
         # Initialize QA chain
         global qa_chain
